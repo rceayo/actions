@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jar-file
-          path: lib/build/libs/*.jar
+          path: burpgpt/lib/build/libs
