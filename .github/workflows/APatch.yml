@@ -83,7 +83,9 @@ jobs:
           echo 'android.native.buildOutput=verbose' >> gradle.properties
           sed -i 's/org.gradle.configuration-cache=true//g' gradle.properties
           ./gradlew clean assembleRelease
-          ls -R .
+          ls -R ./app
+          ls -R ./app/*/*/*/*
+          # ls -R .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
