@@ -84,7 +84,7 @@ jobs:
           sed -i 's/org.gradle.configuration-cache=true//g' gradle.properties
           ./gradlew clean assembleRelease
           ls -R ./app
-          ls -R ./app/*/*/*/*
+          # ls -R ./app/*/*/*/*
           # ls -R .
 
       - name: Upload build artifact
@@ -92,7 +92,7 @@ jobs:
         with:
           name: APatch
           # path: app/build/outputs/apk/release
-          path: app/build/outputs/apk/debug
+          path: APatch/app/build/outputs/apk/release
 
       # - name: Sign Release
       #   env: 
