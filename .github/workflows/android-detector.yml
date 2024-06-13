@@ -20,11 +20,17 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: Setup Gradle
+      # set diy gradle version
+      - name: Setup Gradle 6.7.1
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 6.7.1
-          gradle-home-cache-cleanup: true
+      - name: Build with Gradle 8.5
+        run: gradle build
+      # - name: Setup Gradle
+      #   uses: gradle/actions/setup-gradle@v3
+      #   with:
+      #     gradle-home-cache-cleanup: true
 
       - name: Setup Android NDK
         uses: nttld/setup-ndk@v1
