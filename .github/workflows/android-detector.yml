@@ -48,8 +48,8 @@ jobs:
         run: |
           cd android-detector/detector && chmod +x ./gradlew
           ./gradlew clean assembleRelease
-          ls -R ./android-detector/detector/app
-          # ls -R .
+          # ls -R ./android-detector/detector/app
+          ls -R .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
