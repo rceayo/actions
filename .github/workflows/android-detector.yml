@@ -54,6 +54,6 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: APatch
+          name: android-detector
           # path: app/build/outputs/apk/release
           path: android-detector/detector/app/build/outputs/apk/release
