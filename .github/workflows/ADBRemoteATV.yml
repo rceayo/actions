@@ -36,8 +36,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app
+          # ./app/build/outputs/apk/release: ADB_Remote_ATV_20240627161101.apk
           # path: app/build/outputs/apk/release
-          path: ADBRemoteATV/app/build/outputs/apk/release/app-*.apk
+          path: ADBRemoteATV/app/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
   # deploy:
