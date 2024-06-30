@@ -21,20 +21,20 @@ jobs:
           # （3）takagen99版本 项目地址：https://github.com/takagen99/Box 支持直播回放，界面美观；
           # git clone https://github.com/takagen99/Box
 
-      # - name: Setup Java
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     distribution: 'zulu'
-      #     java-version: 11
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 11
 
-      # - name: Setup Android SDK
-      #   uses: android-actions/setup-android@v2
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
       - name: Build release with Gradle
         run: |
           cd TV && chmod +x ./gradlew
-          # ./gradlew clean assembleRelease
-          ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
+          ./gradlew clean assembleRelease
+          # ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
           # ls -R ./ADBRemoteATV
           ls -R .
         # env:
