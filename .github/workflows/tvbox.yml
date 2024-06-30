@@ -1,0 +1,76 @@
+name: Diy ADBRemoteATV APK CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Clone the repository
+        run: |
+          # （1）OK影视版本 项目地址：https://github.com/FongMi/TV 支持直播多线路、自动换源、直播倍速，手机投屏；
+          git clone https://github.com/FongMi/TV
+          # 加速度调整进度且直观、栏目类不能移到别的栏目、控制最大音量、exo支持设置surface_type、优化访问资源
+          # git clone https://github.com/geneRocket/TV
+          # （2）q215613905版本 项目地址：https://github.com/q215613905/TVBoxOS 支持直播回放；
+          # git clone https://github.com/q215613905/TVBoxOS
+          # （3）takagen99版本 项目地址：https://github.com/takagen99/Box 支持直播回放，界面美观；
+          # git clone https://github.com/takagen99/Box
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Build release with Gradle
+        run: |
+          cd TV && chmod +x ./gradlew
+          # ./gradlew clean assembleRelease
+          ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
+          # ls -R ./ADBRemoteATV
+          ls -R .
+        # env:
+        #   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      
+      - name: Prepare App
+        run: |
+          mkdir -p ${{ github.workspace }}/apk/
+          for file in `find ~ -name "*.apk" -print`; do
+            mv "$file" ${{ github.workspace }}/apk/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-apk
+          path: ${{ github.workspace }}/apk/*
+          # path: ADBRemoteATV/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+  # deploy:
+  #   name: Deploy to GitHub Releases
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+  #   steps:
+  #     - name: Get the APK
+  #       id: get_apk
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: app
+
+  #     - name: Publish the APK to GitHub Releases
+  #       uses: svenstaro/upload-release-action@v2
+  #       with:
+  #         prerelease: true
+  #         asset_name: sslpinning-demo.apk
+  #         file: ${{ steps.get_apk.outputs.download-path }}/app-release.apk
+  #         tag: ${{ github.ref }}
+  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
