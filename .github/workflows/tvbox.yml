@@ -55,18 +55,18 @@ jobs:
         # env:
         #   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       
-      - name: Prepare App
-        run: |
-          mkdir -p ${{ github.workspace }}/apk/
-          for file in `find ~ -name "*.apk" -print`; do
-            mv "$file" ${{ github.workspace }}/apk/
+      # - name: Prepare App
+      #   run: |
+      #     mkdir -p ${{ github.workspace }}/apk/
+      #     for file in `find ~ -name "*.apk" -print`; do
+      #       mv "$file" ${{ github.workspace }}/apk/
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-apk
-          path: ${{ github.workspace }}/apk/*
-          # path: ADBRemoteATV/app/build/outputs/apk/release/*.apk
+          # path: ${{ github.workspace }}/apk/*
+          path: TV/app/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
   # deploy:
