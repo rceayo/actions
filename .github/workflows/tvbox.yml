@@ -33,8 +33,8 @@ jobs:
       - name: Build release with Gradle
         run: |
           cd TV && chmod +x ./gradlew
-          ./gradlew clean assembleRelease
-          # ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
+          # ./gradlew clean assembleRelease
+          ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
           # ls -R ./ADBRemoteATV
           ls -R .
         # env:
