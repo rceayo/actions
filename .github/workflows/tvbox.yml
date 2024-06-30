@@ -30,6 +30,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
+      # - name: Extra Modify
+      #   working-directory: TV
+      #   run: |
+      #     echo '修改VersionName'
+      #     sed -i "/versionName/s#[0-9a-zA-Z_\.\'\"-]\+\$#\'${{ env.tag }}\'#" app/build.gradle
+      #     sed -i "/android:text=/s#=\"#=\"${{ env.tag }}\\\\n\\\\n#" app/src/main/res/layout/dialog_about.xml
+      #     echo 'crosswalk源，防挂'
+      #     if grep -q 'crosswalk' build.gradle; then
+      #       sed -i "/crosswalk/a\        maven { url 'https://o0halflife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
+      #     else
+      #       sed -i "/jitpack.io/a\        maven { url 'https://o0halflife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
+      #     fi
+
       - name: Build release with Gradle
         run: |
           cd TV && chmod +x ./gradlew
