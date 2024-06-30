@@ -47,7 +47,7 @@ jobs:
         run: |
           cd TV && chmod +x ./gradlew
           # error : /home/runner/work/actions/actions/TV/app/src/mobile/res/layout-sw600dp/activity_video.xml:355:15: Error: The element type "LinearLayout" must be terminated by the matching end-tag "</LinearLayout>".
-          sed -i "158,165d" /Users/z/Downloads/activity_video.xml
+          sed -i "158,165d" app/src/mobile/res/layout-sw600dp/activity_video.xml
           # ./gradlew clean assembleRelease
           ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
           # ls -R ./ADBRemoteATV
