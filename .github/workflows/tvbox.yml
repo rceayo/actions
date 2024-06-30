@@ -1,4 +1,4 @@
-name: Diy ADBRemoteATV APK CI
+name: Diy All TVBox APK CI
 
 on:
   workflow_dispatch:
