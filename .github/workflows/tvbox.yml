@@ -17,9 +17,9 @@ jobs:
           # 加速度调整进度且直观、栏目类不能移到别的栏目、控制最大音量、exo支持设置surface_type、优化访问资源
           # git clone https://github.com/geneRocket/TV
           # （2）q215613905版本 项目地址：https://github.com/q215613905/TVBoxOS 支持直播回放；
-          git clone https://github.com/q215613905/TVBoxOS
+          # git clone https://github.com/q215613905/TVBoxOS
           # （3）takagen99版本 项目地址：https://github.com/takagen99/Box 支持直播回放，界面美观；
-          # git clone https://github.com/takagen99/Box
+          git clone https://github.com/takagen99/Box
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -45,8 +45,10 @@ jobs:
 
       - name: Build release with Gradle
         run: |
+          # takagen99版本
+          cd Box && chmod +x ./gradlew
           # q215613905版本
-          cd TVBoxOS && chmod +x ./gradlew
+          # cd TVBoxOS && chmod +x ./gradlew
           # OK影视版本
           # cd TV && chmod +x ./gradlew
           # error : /home/runner/work/actions/actions/TV/app/src/mobile/res/layout-sw600dp/activity_video.xml:355:15: Error: The element type "LinearLayout" must be terminated by the matching end-tag "</LinearLayout>".
