@@ -46,17 +46,20 @@ jobs:
 
       - name: Build release with Gradle
         run: |
-          # takagen99版本
-          cd Box && chmod +x ./gradlew
+          # # takagen99版本
+          # cd Box && chmod +x ./gradlew
+
           # q215613905版本
           # cd TVBoxOS && chmod +x ./gradlew
+
           # OK影视版本
-          # cd TV && chmod +x ./gradlew
+          cd TV && chmod +x ./gradlew
           # error : /home/runner/work/actions/actions/TV/app/src/mobile/res/layout-sw600dp/activity_video.xml:355:15: Error: The element type "LinearLayout" must be terminated by the matching end-tag "</LinearLayout>".
           # sed -i "158,165d" app/src/mobile/res/layout-sw600dp/activity_video.xml
+
           # ./gradlew clean assembleRelease
           ./gradlew clean assemblerelease --build-cache --parallel --daemon --warning-mode all
-          # ls -R ./ADBRemoteATV
+          # ls -R ./TV
           ls -R .
         # env:
         #   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
