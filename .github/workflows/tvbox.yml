@@ -43,6 +43,10 @@ jobs:
       #     else
       #       sed -i "/jitpack.io/a\        maven { url 'https://o0halflife0o.github.io/crosswalk/releases/crosswalk/android/maven2' }" build.gradle
       #     fi
+      - name: Setup Python for OK影视
+        uses: actions/setup-python@v5.2.0
+        with:
+          python-version: '3.10'
 
       - name: Build release with Gradle
         run: |
