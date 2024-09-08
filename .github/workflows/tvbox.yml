@@ -60,6 +60,11 @@ jobs:
           # cd TV && git checkout fongmi
           cd TV
           chmod +x ./gradlew
+
+          # 20240908代码版本报错
+          sed -i "s/com.github.ctiao:DanmakuFlameMaster:0.9.25/com.github.ctiao:dfm:0.9.25" app/build.gradle
+          sed -i "40a/import com.fongmi.android.tv.event.RefreshEvent;" app/src/leanback/java/com/fongmi/android/tv/ui/activity/LiveActivity.java
+          cat app/src/leanback/java/com/fongmi/android/tv/ui/activity/LiveActivity.java
           # error : /home/runner/work/actions/actions/TV/app/src/mobile/res/layout-sw600dp/activity_video.xml:355:15: Error: The element type "LinearLayout" must be terminated by the matching end-tag "</LinearLayout>".
           # sed -i "158,165d" app/src/mobile/res/layout-sw600dp/activity_video.xml
 
