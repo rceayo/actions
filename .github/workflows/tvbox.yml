@@ -57,7 +57,8 @@ jobs:
           # cd TVBoxOS && chmod +x ./gradlew
 
           # OK影视版本
-          cd TV && git checkout fongmi
+          # cd TV && git checkout fongmi
+          cd TV
           chmod +x ./gradlew
           # error : /home/runner/work/actions/actions/TV/app/src/mobile/res/layout-sw600dp/activity_video.xml:355:15: Error: The element type "LinearLayout" must be terminated by the matching end-tag "</LinearLayout>".
           # sed -i "158,165d" app/src/mobile/res/layout-sw600dp/activity_video.xml
