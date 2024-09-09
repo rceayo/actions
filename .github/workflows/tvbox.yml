@@ -47,6 +47,24 @@ jobs:
         uses: actions/setup-python@v5.2.0
         with:
           python-version: '3.10'
+      
+      - name: Release Apk Sign
+        if: ${{ env.commit }}
+        # working-directory: TVBoxOSC
+        working-directory: TV
+        run: |
+          signingConfigs='ICAgIHNpZ25pbmdDb25maWdzIHtcCiAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICBteUNvbmZpZyB7XAogICAgICAgICAgICAgICAgc3RvcmVGaWxlIGZpbGUoUkVMRUFTRV9TVE9SRV9GSUxFKVwKICAgICAgICAgICAgICAgIHN0b3JlUGFzc3dvcmQgUkVMRUFTRV9TVE9SRV9QQVNTV09SRFwKICAgICAgICAgICAgICAgIGtleUFsaWFzIFJFTEVBU0VfS0VZX0FMSUFTXAogICAgICAgICAgICAgICAga2V5UGFzc3dvcmQgUkVMRUFTRV9LRVlfUEFTU1dPUkRcCiAgICAgICAgICAgICAgICB2MVNpZ25pbmdFbmFibGVkIHRydWVcCiAgICAgICAgICAgICAgICB2MlNpZ25pbmdFbmFibGVkIHRydWVcCiAgICAgICAgICAgICAgICBlbmFibGVWM1NpZ25pbmcgPSB0cnVlXAogICAgICAgICAgICAgICAgZW5hYmxlVjRTaWduaW5nID0gdHJ1ZVwKICAgICAgICAgICAgfVwKICAgICAgICB9XAogICAgfVwKXA=='
+          signingConfig='ICAgICAgICAgICAgaWYgKHByb2plY3QuaGFzUHJvcGVydHkoIlJFTEVBU0VfU1RPUkVfRklMRSIpKSB7XAogICAgICAgICAgICAgICAgc2lnbmluZ0NvbmZpZyBzaWduaW5nQ29uZmlncy5teUNvbmZpZ1wKICAgICAgICAgICAgfVwK'
+          signingConfigs="$(echo "$signingConfigs" |base64 -d )"
+          signingConfig="$(echo "$signingConfig" |base64 -d )"
+          sed -i -e "/defaultConfig {/i\\$signingConfigs " -e "/debug {/a\\$signingConfig " -e "/release {/a\\$signingConfig " app/build.gradle
+          cp -f ${{ github.workspace }}/.github/workflows/vapk.jks app/vapk.jks
+          sed -i '$a\RELEASE_STORE_FILE=./vapk.jks'     ./gradle.properties
+          sed -i '$a\RELEASE_KEY_ALIAS=vapk'            ./gradle.properties
+          # sed -i '$a\RELEASE_STORE_PASSWORD=vapk'       ./gradle.properties
+          env
+          sed -i '$a\RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}'       ./gradle.properties
+          sed -i '$a\RELEASE_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}'         ./gradle.properties
 
       - name: Build release with Gradle
         run: |
