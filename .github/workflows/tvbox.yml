@@ -49,7 +49,7 @@ jobs:
           python-version: '3.10'
       
       - name: Release Apk Sign
-        if: ${{ env.commit }}
+        # if: ${{ env.commit }}
         # working-directory: TVBoxOSC
         working-directory: TV
         run: |
