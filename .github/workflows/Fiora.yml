@@ -48,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jar-file
-          path: Fiora/target/*.jar
+          path: Fiora/target/*-with-dependencies.jar
