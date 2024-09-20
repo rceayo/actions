@@ -1,0 +1,57 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Diy al-khaser CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/al-khaser.yml'
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-2022
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      - name: Clone the repository
+        run: |
+          git clone https://github.com/LordNoteworthy/al-khaser
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1.3
+      
+      - name: Restore NuGet packages
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+      - name: Build with Maven
+        run: |
+          cd al-khaser
+          # Build x86
+          msbuild /m /p:Platform=x86 /p:Configuration=Release al-khaser.sln
+          # Build x64
+          msbuild /m /p:Platform=x64 /p:Configuration=Release al-khaser.sln
+          # Zip x86 Binaries
+          # 7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -mhe=on -p"yug69gG89T98HGUY8y" al-khaser_x86.7z al-khaser_x86.exe
+          ls -R .
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: al-khaser
+          path: al-khaser/al-khaser_x*.exe
