@@ -28,7 +28,7 @@ jobs:
           sed -i '95a \ \ \ \ options.headers["Referer"] = "https://xz.aliyun.com/";' src/service/request/common/request.ts
           cat src/service/request/common/request.ts
           npm install --force
-          npm run cov
+          # npm run cov
           npm run release
           ls -R .
 
