@@ -1,4 +1,4 @@
-name: Diy ADBRemoteATV APK CI
+name: Diy web-clipper APK CI
 
 on:
   workflow_dispatch:
