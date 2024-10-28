@@ -23,7 +23,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd web-clipper
-          sed -i '102a         "Referer": "https://xz.aliyun.com/",' src/service/request/common/request.ts
+          sed -i '101a \ \ \ \ \ \ \ \ "Referer": "https://xz.aliyun.com/",' src/service/request/common/request.ts
           cat src/service/request/common/request.ts
           npm install --force
           npm run cov
