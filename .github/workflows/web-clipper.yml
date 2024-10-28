@@ -23,7 +23,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd web-clipper
-          sed -i '101a \ \ \ \ \ \ \ \ \ \ "Referer": "https://xz.aliyun.com/",' src/service/request/common/request.ts
+          # 文件添加新行内容
+          sed -i '94a \ \ \ \ options.headers['Referer'] = 'https://xz.aliyun.com/';' src/service/request/common/request.ts
           cat src/service/request/common/request.ts
           npm install --force
           npm run cov
