@@ -1,0 +1,37 @@
+name: Diy ADBRemoteATV APK CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repository
+        run: |
+          git clone https://github.com/webclipper/web-clipper
+      
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+      - name: Install Dependencies
+        run: |
+          cd web-clipper
+          sed -i '102a         "Referer": "https://xz.aliyun.com/",' src/service/request/common/request.ts
+          cat src/service/request/common/request.ts
+          npm install --force
+          npm run cov
+          npm run release
+          ls -R .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: web-clipper/build/*
+          if-no-files-found: error
+
