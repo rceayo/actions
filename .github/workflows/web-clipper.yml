@@ -7,9 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone the repository
-        run: |
-          git clone https://github.com/webclipper/web-clipper
       
       - name: Checkout code
         uses: actions/checkout@v2
@@ -18,6 +15,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+
+      - name: Clone the repository
+        run: |
+          git clone https://github.com/webclipper/web-clipper
+      
       - name: Install Dependencies
         run: |
           cd web-clipper
