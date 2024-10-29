@@ -24,14 +24,14 @@ jobs:
         run: |
           cd web-clipper
           # 文件添加新行内容
-          sed -i '94a \ \ \ \ options.headers = options.headers || {};' src/service/request/common/request.ts
-          sed -i '95a \ \ \ \ options.headers["Referer"] = "https://xz.aliyun.com/";' src/service/request/common/request.ts
+          # sed -i '94a \ \ \ \ options.headers = options.headers || {};' src/service/request/common/request.ts
+          # sed -i '95a \ \ \ \ options.headers["Referer"] = "https://xz.aliyun.com/";' src/service/request/common/request.ts
           cat src/service/request/common/request.ts
           mkdir dist
           npm install --force
           # npm run cov
           npm run release
-          ls -R .
+          ls -R . -I node_modules
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
