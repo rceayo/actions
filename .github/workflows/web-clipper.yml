@@ -30,7 +30,6 @@ jobs:
           mkdir dist
           npm install --force
           # npm run cov
-          npm run build
           npm run release
           ls -R . -I node_modules
 
