@@ -31,6 +31,7 @@ jobs:
           npm install --force
           # npm run cov
           npm run release
+          npm run release
           ls -R . -I node_modules
 
       - name: Upload build artifact
