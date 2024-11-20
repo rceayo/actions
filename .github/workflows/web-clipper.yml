@@ -29,8 +29,8 @@ jobs:
           cat src/service/request/common/request.ts
           mkdir dist
           npm install --force
+          npx web-clipper
           # npm run cov
-          npm run release
           npm run release
           ls -R . -I node_modules
 
