@@ -29,7 +29,8 @@ jobs:
           cat src/service/request/common/request.ts
           mkdir dist
           npm install --force
-          npx web-clipper
+          npm install --save-dev typescript webpack webpack-cli ts-loader
+          webpack
           # npm run cov
           npm run release
           ls -R . -I node_modules
