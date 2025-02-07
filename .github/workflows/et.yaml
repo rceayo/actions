@@ -84,6 +84,9 @@ jobs:
       
       - name: Build IOS 
         run: |
+          pwd
+          ls
+          cd EasyTier/easytier-gui
           # cd easytier-gui
           pnpm tauri ios init
           pnpm tauri ios build
