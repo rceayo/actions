@@ -52,6 +52,7 @@ jobs:
 
       - name: Install frontend dependencies
         run: |
+          cd easytier-gui
           pnpm -r install
           pnpm -r build
 
@@ -79,7 +80,7 @@ jobs:
       
       - name: Build IOS 
         run: |
-          cd easytier-gui
+          # cd easytier-gui
           pnpm tauri ios init
           pnpm tauri ios build
           ls -R ../
