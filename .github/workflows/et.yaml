@@ -52,7 +52,9 @@ jobs:
 
       - name: Install frontend dependencies
         run: |
-          cd easytier-gui
+          pwd
+          ls
+          cd EasyTier/easytier-gui
           pnpm -r install
           pnpm -r build
 
