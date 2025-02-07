@@ -56,9 +56,9 @@ jobs:
           ls
           cd EasyTier/easytier-gui
           pnpm -r install
-          echo '\n\npnpm -r install succ'
+          echo "\n\npnpm -r install succ"
           pnpm -r build
-          echo '\n\npnpm -r build succ'
+          echo "\n\npnpm -r build succ"
 
       # - name: Cargo cache
       #   uses: actions/cache@v4
@@ -74,7 +74,7 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup.sh
           sh rustup.sh -y
           # bash ./.github/workflows/install_rust.sh
-          echo '\n\nInstall rust succ'
+          echo "\n\nInstall rust succ"
           rustup target list
           rustup target add aarch64-apple-ios
           rustup target add aarch64-apple-ios-sim
@@ -91,15 +91,18 @@ jobs:
           cd EasyTier/easytier-gui
           # cd easytier-gui
           pnpm tauri ios init
-          echo '\n\npnpm tauri ios init succ'
-          pnpm tauri ios dev
-          echo '\n\npnpm tauri ios dev succ'
+          echo "\n\npnpm tauri ios init succ"
+          # 执行交互式命令方法1，45为打印的 iphone 15 pro
+          echo -e '45' | pnpm tauri ios dev
+          # # 执行交互式命令方法2
+          # sh ~/.github/workflows/tools/et_pnpm_ios_dev.sh
           ls -R . | grep -v 'node_modules|.vscode'
+          # 在8行后面新插入两行行
           sed '9i\
               "iOS": { "developmentTeam": "v"},
               ' tauri.conf.json
-          # pnpm tauri ios build
-          # echo '\n\npnpm tauri ios build succ'
+          pnpm tauri ios build
+          echo "\n\npnpm tauri ios build succ"
           ls -R ../ | grep -v 'node_modules|.vscode'
           ls -R . | grep -v 'node_modules|.vscode'
 
