@@ -41,6 +41,12 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      
+      - name: Setup protoc
+        uses: arduino/setup-protoc@v2
+        with:
+          # GitHub repo token to use to avoid rate limiter
+          repo-token: ${{ secrets.GIT_TOKEN }}
 
       # - name: Setup pnpm cache
       #   uses: actions/cache@v4
@@ -92,7 +98,9 @@ jobs:
           # cd easytier-gui
           pnpm tauri ios init
           echo "\n\npnpm tauri ios init succ"
-          # 执行交互式命令方法1，45为打印的 iphone 15 pro
+          brew install protobuf
+          echo "\n\nbrew install protobuf succ"
+          # 执行交互式命令方法1，45为打印的 [45] iPhone 15 Pro
           echo -e '45' | pnpm tauri ios dev
           # # 执行交互式命令方法2
           # sh ~/.github/workflows/tools/et_pnpm_ios_dev.sh
