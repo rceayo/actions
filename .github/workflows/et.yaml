@@ -68,7 +68,9 @@ jobs:
 
       - name: Install rust target
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup.sh
+          sh rustup.sh -y
           # bash ./.github/workflows/install_rust.sh
           rustup target list
           # rustup target add aarch64-apple-darwin
@@ -85,8 +87,8 @@ jobs:
           # cd easytier-gui
           pnpm tauri ios init
           pnpm tauri ios build
-          ls -R ../
-          ls -R .
+          ls -R ../ | grep -v 'node_modules|.vscode'
+          ls -R . | grep -v 'node_modules|.vscode'
 
 
       - name: Archive artifact
