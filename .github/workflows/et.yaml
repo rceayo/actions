@@ -56,7 +56,9 @@ jobs:
           ls
           cd EasyTier/easytier-gui
           pnpm -r install
+          echo '\n\npnpm -r install succ'
           pnpm -r build
+          echo '\n\npnpm -r build succ'
 
       # - name: Cargo cache
       #   uses: actions/cache@v4
@@ -72,10 +74,10 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustup.sh
           sh rustup.sh -y
           # bash ./.github/workflows/install_rust.sh
+          echo '\n\nInstall rust succ'
           rustup target list
-          # rustup target add aarch64-apple-darwin
-          # rustup target add aarch64-apple-ios
-          # rustup target add aarch64-apple-ios-sim
+          rustup target add aarch64-apple-ios
+          rustup target add aarch64-apple-ios-sim
 
           # rustup target add aarch64-linux-android
           # rustup target add armv7-linux-androideabi
@@ -89,7 +91,15 @@ jobs:
           cd EasyTier/easytier-gui
           # cd easytier-gui
           pnpm tauri ios init
-          pnpm tauri ios build
+          echo '\n\npnpm tauri ios init succ'
+          pnpm tauri ios dev
+          echo '\n\npnpm tauri ios dev succ'
+          ls -R . | grep -v 'node_modules|.vscode'
+          sed '9i\
+              "iOS": { "developmentTeam": "v"},
+              ' tauri.conf.json
+          # pnpm tauri ios build
+          # echo '\n\npnpm tauri ios build succ'
           ls -R ../ | grep -v 'node_modules|.vscode'
           ls -R . | grep -v 'node_modules|.vscode'
 
@@ -99,4 +109,6 @@ jobs:
         with:
           name: easytier-gui-ipa
           path: |
-            EasyTier/*
+            # EasyTier/*
+            EasyTier/*/*.ipa
+            # EasyTier/easytier-gui/src-tauri/gen/apple/build/arm64/*.ipa
