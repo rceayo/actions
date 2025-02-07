@@ -1,0 +1,94 @@
+name: Diy EasyTier Mobile IOS ipa CI
+
+on:
+  workflow_dispatch:
+      
+env:
+  CARGO_TERM_COLOR: always
+
+defaults:
+  run:
+    # necessary for windows
+    shell: bash
+
+jobs:
+
+  build:
+    name: Build iPhone ios ipa simulator
+    # 环境
+    runs-on: macos-latest
+    steps:
+      # Checkout 当前分支进行处理
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Clone the repository
+        run: |
+          git clone https://github.com/EasyTier/EasyTier
+          cd EasyTier
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 21
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+      
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install frontend dependencies
+        run: |
+          pnpm -r install
+          pnpm -r build
+
+      - name: Cargo cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo
+            ./target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install rust target
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          # bash ./.github/workflows/install_rust.sh
+          rustup target list
+          # rustup target add aarch64-apple-darwin
+          # rustup target add aarch64-apple-ios
+          # rustup target add aarch64-apple-ios-sim
+          
+          # rustup target add aarch64-linux-android
+          # rustup target add armv7-linux-androideabi
+          # rustup target add i686-linux-android
+          # rustup target add x86_64-linux-android
+      
+      - name: Build IOS 
+        run: |
+          cd easytier-gui
+          pnpm tauri ios init
+          pnpm tauri ios build
+          ls -R ../
+          ls -R .
+
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: easytier-gui-ipa
+          path: |
+            EasyTier/*
