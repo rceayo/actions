@@ -100,6 +100,7 @@ jobs:
           # cat mp.mobileprovision | base64
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.MOBILEPROVISION_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          APPLE_DEVELOPMENT_TEAM: ${{ secrets.APPLE_DEVELOPMENT_TEAM }}
         run: |
           # Create Environmental variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
@@ -125,6 +126,8 @@ jobs:
           ls
           cd EasyTier/easytier-gui
           # cd easytier-gui
+          pnpm tauri info
+          echo "\n\nview cert"
           pnpm tauri ios init
           echo "\n\npnpm tauri ios init succ"
           brew install protobuf
