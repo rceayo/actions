@@ -130,6 +130,15 @@ jobs:
           echo "\n\nview cert"
           pnpm tauri ios init
           echo "\n\npnpm tauri ios init succ"
+
+          ls -R . | grep -v 'node_modules|.vscode'
+          cat src-tauri/tauri.conf.json
+          # 在8行后面新插入两行行
+          sed '9i\
+              "iOS": { "developmentTeam": "${{ secrets.APPLE_DEVELOPMENT_TEAM }}"},
+              ' src-tauri/tauri.conf.json
+          cat src-tauri/tauri.conf.json
+
           brew install protobuf
           echo "\n\nbrew install protobuf succ"
 
