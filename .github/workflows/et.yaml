@@ -14,7 +14,7 @@ defaults:
 jobs:
 
   build:
-    name: Build iPhone ios ipa simulator
+    name: Build iPhone ios EasyTier Mobile IOS ipa
     # 环境
     runs-on: macos-latest
     steps:
