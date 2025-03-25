@@ -138,7 +138,7 @@ jobs:
 
           # 替换id
           cat src-tauri/tauri.conf.json
-          sed -i 's/com.kkrainbow.easytier/com.kotak.mb.pilot/g' src-tauri/tauri.conf.json
+          sed -i 's/com\.kkrainbow\.easytier/com\.kotak\.mb\.pilot/g' src-tauri/tauri.conf.json
           cat src-tauri/tauri.conf.json
           echo "替换id succ"
 
