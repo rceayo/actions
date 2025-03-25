@@ -137,6 +137,7 @@ jobs:
           security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
 
           # 替换id
+          echo "查看src-tauri/tauri.conf.json"
           cat src-tauri/tauri.conf.json
           sed -i 's/com\.kkrainbow\.easytier/com\.kotak\.mb\.pilot/g' src-tauri/tauri.conf.json
           cat src-tauri/tauri.conf.json
