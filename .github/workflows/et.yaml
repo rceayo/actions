@@ -129,8 +129,10 @@ jobs:
           pnpm tauri info
           echo "\n\nview cert"
 
-          echo "查看描述文件中的 Bundle Identifier"
-          security cms -D -i $PP_PATH
+          echo "查看env"
+          env
+          # echo "查看描述文件中的 Bundle Identifier", 报错
+          # security cms -D -i $PP_PATH
           echo "查看描述文件中的 Bundle Identifier"
           security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
 
