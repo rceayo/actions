@@ -128,16 +128,22 @@ jobs:
           # cd easytier-gui
           pnpm tauri info
           echo "\n\nview cert"
+
+          echo "查看描述文件中的 Bundle Identifier"
+          security cms -D -i $PP_PATH
+          echo "查看描述文件中的 Bundle Identifier"
+          security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+
+          # 替换id
+          cat src-tauri/tauri.conf.json
+          sed -i 's/com.kkrainbow.easytier/com.kotak.mb.pilot/g' src-tauri/tauri.conf.json
+          cat src-tauri/tauri.conf.json
+          echo "替换id succ"
+
           pnpm tauri ios init
           echo "\n\npnpm tauri ios init succ"
 
           ls -R . | grep -v 'node_modules|.vscode'
-          cat src-tauri/tauri.conf.json
-          # 在8行后面新插入两行行
-          sed '9i\
-              "iOS": { "developmentTeam": "${{ secrets.APPLE_DEVELOPMENT_TEAM }}"},
-              ' src-tauri/tauri.conf.json
-          cat src-tauri/tauri.conf.json
 
           brew install protobuf
           echo "\n\nbrew install protobuf succ"
