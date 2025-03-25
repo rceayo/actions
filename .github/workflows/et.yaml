@@ -129,22 +129,32 @@ jobs:
           pnpm tauri info
           echo "\n\nview cert"
 
+          echo "指定 APPLE_DEVELOPMENT_TEAM"
+          export APPLE_DEVELOPMENT_TEAM=2JL8954UQK
+
+          echo ""
           echo "查看env"
           env
           # echo "查看描述文件中的 Bundle Identifier", 报错
           # security cms -D -i $PP_PATH
+          echo ""
           echo "查看描述文件中的 Bundle Identifier"
           security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
 
           # 替换id
+          echo ""
           echo "查看src-tauri/tauri.conf.json"
           cat src-tauri/tauri.conf.json
           # macos报错，没有指定备份文件的后缀
           # sed -i 's/com\.kkrainbow\.easytier/com\.kotak\.mb\.pilot/g' src-tauri/tauri.conf.json
           sed -i '' 's/com\.kkrainbow\.easytier/com\.kotak\.mb\.pilot/g' src-tauri/tauri.conf.json
+          echo ""
+          echo "第二次查看src-tauri/tauri.conf.json"
           cat src-tauri/tauri.conf.json
           echo "替换id succ"
 
+          echo ""
+          echo "执行pnpm tauri ios init"
           pnpm tauri ios init
           echo "\n\npnpm tauri ios init succ"
 
@@ -153,6 +163,8 @@ jobs:
           brew install protobuf
           echo "\n\nbrew install protobuf succ"
 
+          echo ""
+          echo "执行pnpm tauri ios build"
           pnpm tauri ios build
           echo "\n\npnpm tauri ios build succ"
           ls -R ../ | grep -v 'node_modules|.vscode'
