@@ -157,13 +157,26 @@ jobs:
           cat src-tauri/tauri.conf.json
           echo "替换id succ"
 
-          gem install xcodeproj
-          # 修改开发团队ID
-          xcodeproj -p path/to/your/project.xcodeproj \
-              -t 'easytier-gui_iOS' \
-              --development-team '2JL8954UQK' \
-              --provisioning-profile 'kotak Mb2.0 CUG PILOT' \
-              --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'
+          # gem install xcodeproj
+          # # 修改开发团队ID
+          # xcodeproj -p src-tauri/gen/apple/easytier-gui.xcodeproj \
+          #     -t 'easytier-gui_iOS' \
+          #     --development-team '2JL8954UQK' \
+          #     --provisioning-profile 'kotak Mb2.0 CUG PILOT' \
+          #     --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'
+
+          xcodebuild \
+            -project "easytier-gui.xcodeproj" \
+            -scheme "easytier-gui_iOS" \
+            -configuration "Release" \
+            -sdk iphoneos \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="2JL8954UQK" \
+            PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
+            CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
+            clean build
+
 
           echo ""
           echo "执行pnpm tauri ios init"
