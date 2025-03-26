@@ -173,17 +173,30 @@ jobs:
           echo "执行xcodebuild替换sign"
           cd src-tauri/gen/apple
           ls
+          profile_uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision | plutil -extract UUID xml1 -o - -)
+          echo "Profile UUID: $profile_uuid"
           xcodebuild \
             -project "easytier-gui.xcodeproj" \
             -scheme "easytier-gui_iOS" \
             -configuration "Release" \
             -sdk iphoneos \
-            -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM="2JL8954UQK" \
-            PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
             CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
+            PROVISIONING_PROFILE="$profile_uuid" \
             clean build
+
+          # xcodebuild \
+          #   -project "easytier-gui.xcodeproj" \
+          #   -scheme "easytier-gui_iOS" \
+          #   -configuration "Release" \
+          #   -sdk iphoneos \
+          #   -allowProvisioningUpdates \
+          #   CODE_SIGN_STYLE=Manual \
+          #   DEVELOPMENT_TEAM="2JL8954UQK" \
+          #   PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
+          #   CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
+          #   clean build
           cd ../../
           ls
 
