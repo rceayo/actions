@@ -148,10 +148,21 @@ jobs:
           # macos报错，没有指定备份文件的后缀
           # sed -i 's/com\.kkrainbow\.easytier/com\.kotak\.mb\.pilot/g' src-tauri/tauri.conf.json
           sed -i '' 's/com\.kkrainbow\.easytier/com\.kotak\.mb\.pilot/g' src-tauri/tauri.conf.json
+          # # 在8行后面新插入行
+          # sed '9i\
+          #     "identifier": "com.kotgem install xcodeproj
+          #     ' src-tauri/tauri.conf.json
           echo ""
           echo "第二次查看src-tauri/tauri.conf.json"
           cat src-tauri/tauri.conf.json
           echo "替换id succ"
+
+          # 修改开发团队ID
+          xcodeproj -p path/to/your/project.xcodeproj \
+              -t 'easytier-gui_iOS' \
+              --development-team '2JL8954UQK' \
+              --provisioning-profile 'kotak Mb2.0 CUG PILOT' \
+              --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'ak.mb.pilot",
 
           echo ""
           echo "执行pnpm tauri ios init"
