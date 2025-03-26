@@ -174,18 +174,18 @@ jobs:
           cat src-tauri/gen/apple/ExportOptions.plist
 
           echo "<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>app-store-connect</string>
-    <key>provisioningProfiles</key>
-        <dict>
-            <key>com.corp.appName</key> <!-- set your app bundle identifier -->
-            <string>YourProvisioningProfileName</string> <!-- set your provisioning profile name -->
-        </dict>
-</dict>
-</plist>" > src-tauri/gen/apple/ExportOptions.plist
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>provisioningProfiles</key>
+                  <dict>
+                      <key>com.corp.appName</key> <!-- set your app bundle identifier -->
+                      <string>YourProvisioningProfileName</string> <!-- set your provisioning profile name -->
+                  </dict>
+          </dict>
+          </plist>" > src-tauri/gen/apple/ExportOptions.plist
 
           # cd src-tauri/gen/apple
           # ls
