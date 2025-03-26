@@ -173,13 +173,19 @@ jobs:
           echo "执行xcodebuild替换sign"
           cat src-tauri/gen/apple/ExportOptions.plist
 
+          echo "执行替换ExportOptions.plist"
           # "ad-hoc", "package" "enterprise", "development", or "developer-id". Default "app-store".
+          # signingStyle ：指定签名方式（例如，manual 或 automatic）。uploadSymbols ：指定是否上传符号文件。
           echo "<?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
               <key>method</key>
               <string>enterprise</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>uploadSymbols</key>
+              <true/>
               <key>provisioningProfiles</key>
                   <dict>
                       <key>com.kotak.mb.pilot</key> <!-- set your app bundle identifier -->
@@ -188,36 +194,38 @@ jobs:
           </dict>
           </plist>" > src-tauri/gen/apple/ExportOptions.plist
 
-          cd src-tauri/gen/apple
-          ls
-          profile_uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision | plutil -extract UUID xml1 -o - -)
-          echo "Profile UUID: $profile_uuid"
-          xcodebuild \
-            -project "easytier-gui.xcodeproj" \
-            -scheme "easytier-gui_iOS" \
-            -configuration "Release" \
-            -sdk iphoneos \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM="2JL8954UQK" \
-            CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
-            PROVISIONING_PROFILE="48fd1f6e-e5be-45c9-b7a1-a2b00c629549" \
-            clean build
-            # PROVISIONING_PROFILE="$profile_uuid" \
-
+          # cd src-tauri/gen/apple
+          # ls
+          # profile_uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision | plutil -extract UUID xml1 -o - -)
+          # echo "Profile UUID: $profile_uuid"
           # xcodebuild \
           #   -project "easytier-gui.xcodeproj" \
           #   -scheme "easytier-gui_iOS" \
           #   -configuration "Release" \
           #   -sdk iphoneos \
-          #   -allowProvisioningUpdates \
           #   CODE_SIGN_STYLE=Manual \
           #   DEVELOPMENT_TEAM="2JL8954UQK" \
-          #   PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
           #   CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
+          #   PROVISIONING_PROFILE="48fd1f6e-e5be-45c9-b7a1-a2b00c629549" \
           #   clean build
+          #   # PROVISIONING_PROFILE="$profile_uuid" \
 
-          cd ../../
-          ls
+          # # xcodebuild \
+          # #   -project "easytier-gui.xcodeproj" \
+          # #   -scheme "easytier-gui_iOS" \
+          # #   -configuration "Release" \
+          # #   -sdk iphoneos \
+          # #   -allowProvisioningUpdates \
+          # #   CODE_SIGN_STYLE=Manual \
+          # #   DEVELOPMENT_TEAM="2JL8954UQK" \
+          # #   PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
+          # #   CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
+          # #   clean build
+
+          # cd ../../
+          # ls
+
+          echo "查看替换的ExportOptions.plist"
           cat src-tauri/gen/apple/ExportOptions.plist
 
           ls -R . | grep -v 'node_modules|.vscode'
