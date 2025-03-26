@@ -173,16 +173,17 @@ jobs:
           echo "执行xcodebuild替换sign"
           cat src-tauri/gen/apple/ExportOptions.plist
 
+          # "ad-hoc", "package" "enterprise", "development", or "developer-id". Default "app-store".
           echo "<?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>app-store-connect</string>
+              <string>enterprise</string>
               <key>provisioningProfiles</key>
                   <dict>
                       <key>com.kotak.mb.pilot</key> <!-- set your app bundle identifier -->
-                      <string>build_pp</string> <!-- set your provisioning profile name YourProvisioningProfileName -->
+                      <string>Kotak Mb2.0 CUG PILOT</string> <!-- set your provisioning profile name YourProvisioningProfileName -->
                   </dict>
           </dict>
           </plist>" > src-tauri/gen/apple/ExportOptions.plist
