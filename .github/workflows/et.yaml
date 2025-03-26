@@ -165,6 +165,12 @@ jobs:
           #     --provisioning-profile 'kotak Mb2.0 CUG PILOT' \
           #     --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'
           
+          echo ""
+          echo "执行pnpm tauri ios init"
+          pnpm tauri ios init
+          echo "\n\npnpm tauri ios init succ"
+          
+          echo "执行xcodebuild替换sign"
           cd src-tauri/gen/apple
           ls
           xcodebuild \
@@ -180,12 +186,6 @@ jobs:
             clean build
           cd ../../
           ls
-
-
-          echo ""
-          echo "执行pnpm tauri ios init"
-          pnpm tauri ios init
-          echo "\n\npnpm tauri ios init succ"
 
           ls -R . | grep -v 'node_modules|.vscode'
 
