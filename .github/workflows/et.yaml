@@ -182,7 +182,7 @@ jobs:
               <key>provisioningProfiles</key>
                   <dict>
                       <key>com.kotak.mb.pilot</key> <!-- set your app bundle identifier -->
-                      <string>Kotak Mb2.0 CUG PILOT</string> <!-- set your provisioning profile name YourProvisioningProfileName -->
+                      <string>build_pp</string> <!-- set your provisioning profile name YourProvisioningProfileName -->
                   </dict>
           </dict>
           </plist>" > src-tauri/gen/apple/ExportOptions.plist
