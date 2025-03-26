@@ -163,7 +163,7 @@ jobs:
               -t 'easytier-gui_iOS' \
               --development-team '2JL8954UQK' \
               --provisioning-profile 'kotak Mb2.0 CUG PILOT' \
-              --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'ak.mb.pilot",
+              --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'
 
           echo ""
           echo "执行pnpm tauri ios init"
