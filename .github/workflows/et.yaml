@@ -164,7 +164,9 @@ jobs:
           #     --development-team '2JL8954UQK' \
           #     --provisioning-profile 'kotak Mb2.0 CUG PILOT' \
           #     --certificate 'iPhone Distribution: Kotak Mahindra Bank Ltd'
-
+          
+          cd src-tauri/gen/apple
+          ls
           xcodebuild \
             -project "easytier-gui.xcodeproj" \
             -scheme "easytier-gui_iOS" \
@@ -176,6 +178,8 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
             CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
             clean build
+          cd ../../
+          ls
 
 
           echo ""
