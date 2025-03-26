@@ -157,6 +157,7 @@ jobs:
           cat src-tauri/tauri.conf.json
           echo "替换id succ"
 
+          gem install xcodeproj
           # 修改开发团队ID
           xcodeproj -p path/to/your/project.xcodeproj \
               -t 'easytier-gui_iOS' \
