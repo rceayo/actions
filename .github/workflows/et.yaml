@@ -171,6 +171,7 @@ jobs:
           echo "\n\npnpm tauri ios init succ"
           
           echo "执行xcodebuild替换sign"
+          cat src-tauri/gen/apple/ExportOptions.plist
           cd src-tauri/gen/apple
           ls
           profile_uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision | plutil -extract UUID xml1 -o - -)
@@ -183,8 +184,9 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM="2JL8954UQK" \
             CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
-            PROVISIONING_PROFILE="$profile_uuid" \
+            PROVISIONING_PROFILE="48fd1f6e-e5be-45c9-b7a1-a2b00c629549" \
             clean build
+            # PROVISIONING_PROFILE="$profile_uuid" \
 
           # xcodebuild \
           #   -project "easytier-gui.xcodeproj" \
@@ -197,8 +199,10 @@ jobs:
           #   PROVISIONING_PROFILE_SPECIFIER="Kotak Mb2.0 CUG PILOT" \
           #   CODE_SIGN_IDENTITY="iPhone Distribution: Kotak Mahindra Bank Ltd" \
           #   clean build
+
           cd ../../
           ls
+          cat src-tauri/gen/apple/ExportOptions.plist
 
           ls -R . | grep -v 'node_modules|.vscode'
 
