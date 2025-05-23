@@ -38,6 +38,7 @@ jobs:
           curl -OJL https://o.dhcp.cc/yuzu-windows-msvc-source.zip
           7z x yuzu-windows-msvc-source.zip
           cd yuzu-windows-msvc-source
+          git submodule update --init --recursive
           # git checkout EA-3591
           # git checkout EA-3621
           # git checkout EA-3932
