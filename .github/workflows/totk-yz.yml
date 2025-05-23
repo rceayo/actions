@@ -31,13 +31,16 @@ jobs:
       # Runs a single command using the runners shell
       # pwd
       # D:/a/actions/actions/
-      - name: Clone the repository
+      - name: Cloane the repository
         run: |
           # git clone --recursive https://git.dhcp.cc/root/pineapple-src
-          git clone --recursive https://git.silicon.moe/N-archive/pineapple-src
-          cd pineapple-src
+          # git clone --recursive https://git.silicon.moe/N-archive/pineapple-src
+          curl -OJL https://o.dhcp.cc/yuzu-windows-msvc-source.zip
+          7z x yuzu-windows-msvc-source.zip
+          cd yuzu-windows-msvc-source
           # git checkout EA-3591
-          git checkout EA-3621
+          # git checkout EA-3621
+          # git checkout EA-3932
 
 
       # https://github.com/microsoft/setup-msbuild/tree/v1.1.3
@@ -53,7 +56,7 @@ jobs:
       
       - name: Build x86 and x64
         run: |
-          cd pineapple-src
+          cd yuzu-windows-msvc-source
           # 使用 MSVC 的简单命令行构建
           mkdir build
           cd build
@@ -68,5 +71,5 @@ jobs:
         with:
           name: yz-my
           path: |
-            pineapple-src/build/bin
-            # pineapple-src/build/bin/Release
+            yuzu-windows-msvc-source/build/bin
+            # yuzu-windows-msvc-source/build/bin/Release
