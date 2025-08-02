@@ -1,0 +1,94 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Diy totk-ed CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/totk-ed.yml'
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        target: ["msvc"] # TODO: Add msys2
+    defaults:
+      run:
+        shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      # pwd
+      # D:/a/actions/actions/
+      - name: Clone the repository
+        run: |
+          # git clone --recursive https://git.citron-emu.org/Citron/Citron.git
+          # git clone --recursive https://git.citron-emu.org/citron/emu.git
+          git clone --recursive https://git.eden-emu.dev/eden-emu/eden
+
+      # https://github.com/microsoft/setup-msbuild/tree/v1.1.3
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1.3
+      
+      # https://github.com/marketplace/actions/install-vulkan-sdk
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@v1.2
+        with:
+          # version: 1.4.309.0
+          version: latest
+      
+      - name: Build x86 and x64
+        run: |
+          # cd Citron
+          # cd emu
+          cd eden
+          # 使用 MSVC 的简单命令行构建
+          mkdir build
+          cd build
+          # cmake .. -G "Visual Studio 17 2022" -A x64
+
+          cmake .. -G Ninja \
+            -DCMAKE_BUILD_TYPE="Release" \
+            -DENABLE_QT_TRANSLATION=ON \
+            -DUSE_DISCORD_PRESENCE=ON \
+            -DYUZU_USE_BUNDLED_SDL2=OFF \
+            -DYUZU_USE_EXTERNAL_SDL2=ON \
+            -DYUZU_TESTS=OFF \
+            -DYUZU_CMD=OFF \
+            -DYUZU_ROOM_STANDALONE=OFF \
+            -DYUZU_USE_QT_MULTIMEDIA=$MULTIMEDIA \
+            -DYUZU_USE_QT_WEB_ENGINE=$WEBENGINE \
+            -DYUZU_ENABLE_LTO=ON
+          # ninja
+
+          cmake --build . --config Release
+          dir
+          # ls -R .
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Eden-my
+          path: |
+            # Citron/build/bin/Release
+            # Citron/build/dist
+            # emu/build/bin/Release
+            eden/build/bin/Release
