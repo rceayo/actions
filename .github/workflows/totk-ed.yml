@@ -62,27 +62,15 @@ jobs:
           cd eden
           echo "编译前打印"
           # dir
-          ls -R .
+          ls -alh
+          # ls -R .
 
           # 使用 MSVC 的简单命令行构建
           mkdir build
           cd build
           # cmake .. -G "Visual Studio 17 2022" -A x64
+          cmake .. -DCMAKE_BUILD_TYPE="Release" -DENABLE_QT_TRANSLATION=ON -DUSE_DISCORD_PRESENCE=ON -DYUZU_USE_BUNDLED_SDL2=OFF -DYUZU_USE_EXTERNAL_SDL2=ON -DYUZU_TESTS=OFF -DYUZU_CMD=OFF -DYUZU_ROOM_STANDALONE=OFF -DYUZU_USE_QT_MULTIMEDIA=ON -G "Visual Studio 17 2022" -A x64
 
-          cmake .. -G Ninja \
-            -DCMAKE_BUILD_TYPE="Release" \
-            -DENABLE_QT_TRANSLATION=ON \
-            -DUSE_DISCORD_PRESENCE=ON \
-            -DYUZU_USE_BUNDLED_SDL2=OFF \
-            -DYUZU_USE_EXTERNAL_SDL2=ON \
-            -DYUZU_TESTS=OFF \
-            -DYUZU_CMD=OFF \
-            -DYUZU_ROOM_STANDALONE=OFF \
-            -DYUZU_USE_QT_MULTIMEDIA=$MULTIMEDIA \
-            -DYUZU_USE_QT_WEB_ENGINE=$WEBENGINE \
-            -DYUZU_ENABLE_LTO=ON
-          # ninja
-          
           cmake --build . --config Release
           echo "编译后打印"
           # dir
