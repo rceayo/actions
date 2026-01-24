@@ -29,11 +29,11 @@ jobs:
       run:
         shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
     
-    env:
-    #   QT_VERSION: 6.6.1
-    #   QT_ARCH: msvc2019_64
-    #   QT_DIR: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64
-      WINDEPLOYQT: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
+    # env:
+    # #   QT_VERSION: 6.6.1
+    # #   QT_ARCH: msvc2019_64
+    # #   QT_DIR: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64
+    #   WINDEPLOYQT: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -42,20 +42,16 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v4
       
-      # https://mirrors.cloud.tencent.com/qt/online/qtsdkrepository/windows_x86/desktop/qt6_661/
-      # https://github.com/marketplace/actions/install-qt
-      # Windows w/ Qt >= 5.15 && Qt < 6.8: win64_msvc2019_64
-      # Windows w/ Qt >= 6.8: win64_msvc2022_64
-      # Windows (ARM64) w/ Qt >= 6.8: win64_msvc2022_arm64
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.6.1'  # 根据你的 Qt 版本调整
-          arch: 'win64_msvc2019_64'  # 根据你的架构调整
-      
-      # - name: Set WINDEPLOYQT environment variable
-      #   run: |
-      #     echo "WINDEPLOYQT=$QT_DIR/${{ runner.arch }}/bin/windeployqt.exe" >> $GITHUB_ENV
+      # # https://mirrors.cloud.tencent.com/qt/online/qtsdkrepository/windows_x86/desktop/qt6_661/
+      # # https://github.com/marketplace/actions/install-qt
+      # # Windows w/ Qt >= 5.15 && Qt < 6.8: win64_msvc2019_64
+      # # Windows w/ Qt >= 6.8: win64_msvc2022_64
+      # # Windows (ARM64) w/ Qt >= 6.8: win64_msvc2022_arm64
+      # - name: Install Qt
+      #   uses: jurplel/install-qt-action@v4
+      #   with:
+      #     version: '6.6.1'  # 根据你的 Qt 版本调整
+      #     arch: 'win64_msvc2019_64'  # 根据你的架构调整
 
       # Runs a single command using the runners shell
       # pwd
@@ -79,9 +75,9 @@ jobs:
       
       - name: Build x86 and x64
         shell: bash
-        # 使用mingw的clang，而不是msvc
-        env:
-          COMPILER: clang
+        # # 使用mingw的clang，而不是msvc
+        # env:
+        #   COMPILER: clang
         run: |
           pwd
           ls -alh
@@ -98,28 +94,30 @@ jobs:
           cat src/core/memory/cheat_engine.cpp
           cat src/core/memory/cheat_engine.h
 
-          # # 使用 MSVC 的简单命令行构建
-          # mkdir build
-          # cd build
-          # # cmake .. -G "Visual Studio 17 2022" -A x64
+          echo "开始msvc编译"
+          # 使用 MSVC 的简单命令行构建
+          mkdir build
+          cd build
+          # cmake .. -G "Visual Studio 17 2022" -A x64
           # cmake .. -DCMAKE_BUILD_TYPE="Release" -DENABLE_QT_TRANSLATION=ON -DUSE_DISCORD_PRESENCE=ON -DYUZU_USE_BUNDLED_SDL2=OFF -DYUZU_USE_EXTERNAL_SDL2=ON -DYUZU_TESTS=OFF -DYUZU_CMD=OFF -DYUZU_ROOM_STANDALONE=OFF -DYUZU_USE_QT_MULTIMEDIA=ON -G "Visual Studio 17 2022" -A x64
+          cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_QT_TRANSLATION=ON -DUSE_DISCORD_PRESENCE=ON -DYUZU_USE_BUNDLED_SDL2=ON -DBUILD_TESTING=OFF -DYUZU_TESTS=OFF -DDYNARMIC_TESTS=OFF -DYUZU_CMD=OFF -DYUZU_ROOM_STANDALONE=OFF -DYUZU_USE_QT_MULTIMEDIA=false -DYUZU_USE_QT_WEB_ENGINE=false -DYUZU_ENABLE_LTO=ON '-DCMAKE_EXE_LINKER_FLAGS= /LTCG' -DDYNARMIC_ENABLE_LTO=ON -DYUZU_USE_BUNDLED_QT=false -DUSE_CCACHE=false -DENABLE_UPDATE_CHECKER=true -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_FLAGS=-O3 -DCMAKE_C_FLAGS=-O3 -G "Visual Studio 17 2022" -A x64
 
-          # cmake --build . --config Release
+          cmake --build . --config Release
 
-          # C compiler is: /c/mingw64/bin/cc，c++
-          echo "C compiler is: $(command -v cc || echo 'cc not found')"
-          echo "CXX compiler is: $(command -v c++ || echo 'c++ not found')"
-          
-          echo "开始编译"
-          .ci/windows/build.sh
-          echo "编译成功，开始打包！"
-          .ci/windows/package.sh
+          # echo "开始mingw编译"
+          # # C compiler is: /c/mingw64/bin/cc，c++
+          # echo "C compiler is: $(command -v cc || echo 'cc not found')"
+          # echo "CXX compiler is: $(command -v c++ || echo 'c++ not found')"
+          # .ci/windows/build.sh
+          # echo "编译成功，开始打包！"
+          # .ci/windows/package.sh
+
           echo "编译成功后打印"
           # dir
           # ls -R .
           ls -alh build
-          ls -alh bin
-          ls -alh artifacts
+          ls -alh build/bin
+          # ls -alh artifacts
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
@@ -129,5 +127,5 @@ jobs:
             # Citron/build/bin/Release
             # Citron/build/dist
             # emu/build/bin/Release
-            # eden/build/bin/Release
-            eden/artifacts
+            eden/build/bin/Release
+            # eden/artifacts
