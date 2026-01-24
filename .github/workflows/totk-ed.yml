@@ -29,11 +29,11 @@ jobs:
       run:
         shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
     
-    env:
-      QT_VERSION: 6.6.1
-      QT_ARCH: msvc2019_64
-      QT_DIR: C:\Qt\6.6.1\msvc2019_64
-      WINDEPLOYQT: C:\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
+    # env:
+    #   QT_VERSION: 6.6.1
+    #   QT_ARCH: msvc2019_64
+    #   QT_DIR: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64
+    #   WINDEPLOYQT: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -42,6 +42,11 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v4
       
+      # https://mirrors.cloud.tencent.com/qt/online/qtsdkrepository/windows_x86/desktop/qt6_661/
+      # https://github.com/marketplace/actions/install-qt
+      # Windows w/ Qt >= 5.15 && Qt < 6.8: win64_msvc2019_64
+      # Windows w/ Qt >= 6.8: win64_msvc2022_64
+      # Windows (ARM64) w/ Qt >= 6.8: win64_msvc2022_arm64
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -85,6 +90,7 @@ jobs:
           ls -alh
           # ls -R .
 
+          # 工作目录： GITHUB_WORKSPACE，${{ github.workspace }}
           git apply ../.github/workflows/tools/cheat_eden.patch
           cat src/core/memory/cheat_engine.cpp
           cat src/core/memory/cheat_engine.h
@@ -97,6 +103,9 @@ jobs:
 
           # cmake --build . --config Release
 
+          echo "C compiler is: $(command -v cc || echo 'cc not found')"
+          echo "CXX compiler is: $(command -v c++ || echo 'c++ not found')"
+          
           echo "开始编译"
           .ci/windows/build.sh
           echo "编译成功，开始打包！"
