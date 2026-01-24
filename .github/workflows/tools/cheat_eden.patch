@@ -1,0 +1,45 @@
+diff --git a/src/core/memory/cheat_engine.cpp b/src/core/memory/cheat_engine.cpp
+index 77cd587238..3705c1f6ef 100644
+--- a/src/core/memory/cheat_engine.cpp
++++ b/src/core/memory/cheat_engine.cpp
+@@ -68,7 +68,11 @@ void StandardVmCallbacks::MemoryWriteUnsafe(VAddr address, const void* data, u64
+     }
+ 
+     if (system.ApplicationMemory().WriteBlock(address, data, size)) {
+-        Core::InvalidateInstructionCacheRange(system.ApplicationProcess(), address, size);
++        // Only invalidate instruction cache when writing to executable code regions
++        // Most cheats write to data (heap/alias), not code, so this avoids expensive cache invalidation
++        if (IsAddressInCodeRegion(address)) {
++            Core::InvalidateInstructionCacheRange(system.ApplicationProcess(), address, size);
++        }
+     }
+ }
+ 
+@@ -134,6 +138,15 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
+     return true;
+ }
+ 
++bool StandardVmCallbacks::IsAddressInCodeRegion(VAddr address) const {
++    // Check if address is in MainNso (main executable) or ASLR (may contain code)
++    // Heap and Alias regions are data-only and don't need cache invalidation
++    return (address >= metadata.main_nso_extents.base &&
++            address < metadata.main_nso_extents.base + metadata.main_nso_extents.size) ||
++           (address >= metadata.aslr_extents.base &&
++            address < metadata.aslr_extents.base + metadata.aslr_extents.size);
++}
++
+ CheatParser::~CheatParser() = default;
+ 
+ TextCheatParser::~TextCheatParser() = default;
+diff --git a/src/core/memory/cheat_engine.h b/src/core/memory/cheat_engine.h
+index f52f2be7c3..45341f7642 100644
+--- a/src/core/memory/cheat_engine.h
++++ b/src/core/memory/cheat_engine.h
+@@ -37,6 +37,7 @@ public:
+ 
+ private:
+     bool IsAddressInRange(VAddr address) const;
++    bool IsAddressInCodeRegion(VAddr address) const;
+ 
+     const CheatProcessMetadata& metadata;
+     Core::System& system;
