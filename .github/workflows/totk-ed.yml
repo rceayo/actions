@@ -24,7 +24,8 @@ jobs:
 
     strategy:
       matrix:
-        target: ["msvc"] # TODO: Add msys2
+        # target: ["msvc"] # TODO: Add msys2
+        target: ["msys2"] # TODO: Add msys2
     defaults:
       run:
         shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
@@ -65,7 +66,7 @@ jobs:
           ls -alh
           # ls -R .
 
-          git apply ../tools/cheat_eden.patch
+          git apply ~/.github/workflows/tools/cheat_eden.patch
           cat src/core/memory/cheat_engine.cpp
           cat src/core/memory/cheat_engine.h
 
