@@ -24,8 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        # target: ["msvc"] # TODO: Add msys2
-        target: ["msys2"] # TODO: Add msys2
+        target: ["msvc"] # TODO: Add msys2
     defaults:
       run:
         shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
