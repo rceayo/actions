@@ -75,6 +75,8 @@ jobs:
       - name: Build x86 and x64
         shell: bash
         run: |
+          pwd
+          ls -alh
           # cd Citron
           # cd emu
           cd eden
@@ -83,7 +85,7 @@ jobs:
           ls -alh
           # ls -R .
 
-          git apply ~/.github/workflows/tools/cheat_eden.patch
+          git apply ../.github/workflows/tools/cheat_eden.patch
           cat src/core/memory/cheat_engine.cpp
           cat src/core/memory/cheat_engine.h
 
