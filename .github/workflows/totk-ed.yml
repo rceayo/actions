@@ -79,6 +79,9 @@ jobs:
       
       - name: Build x86 and x64
         shell: bash
+        # 使用mingw的clang，而不是msvc
+        env:
+          COMPILER: clang
         run: |
           pwd
           ls -alh
@@ -103,6 +106,7 @@ jobs:
 
           # cmake --build . --config Release
 
+          # C compiler is: /c/mingw64/bin/cc，c++
           echo "C compiler is: $(command -v cc || echo 'cc not found')"
           echo "CXX compiler is: $(command -v c++ || echo 'c++ not found')"
           
