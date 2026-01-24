@@ -28,12 +28,29 @@ jobs:
     defaults:
       run:
         shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
+    
+    env:
+      QT_VERSION: 6.6.1
+      QT_ARCH: msvc2019_64
+      QT_DIR: C:\Qt\6.6.1\msvc2019_64
+      WINDEPLOYQT: C:\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
+
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out source code
         uses: actions/checkout@v4
+      
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.6.1'  # 根据你的 Qt 版本调整
+          arch: 'win64_msvc2019_64'  # 根据你的架构调整
+      
+      # - name: Set WINDEPLOYQT environment variable
+      #   run: |
+      #     echo "WINDEPLOYQT=$QT_DIR/${{ runner.arch }}/bin/windeployqt.exe" >> $GITHUB_ENV
 
       # Runs a single command using the runners shell
       # pwd
@@ -56,6 +73,7 @@ jobs:
           version: latest
       
       - name: Build x86 and x64
+        shell: bash
         run: |
           # cd Citron
           # cd emu
@@ -83,7 +101,10 @@ jobs:
           .ci/windows/package.sh
           echo "编译成功后打印"
           # dir
-          ls -R .
+          # ls -R .
+          ls -alh build
+          ls -alh bin
+          ls -alh artifacts
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
