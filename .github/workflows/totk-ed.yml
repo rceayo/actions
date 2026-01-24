@@ -29,11 +29,11 @@ jobs:
       run:
         shell: ${{ (matrix.target == 'msys2' && 'msys2') || 'bash' }} {0}
     
-    # env:
+    env:
     #   QT_VERSION: 6.6.1
     #   QT_ARCH: msvc2019_64
     #   QT_DIR: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64
-    #   WINDEPLOYQT: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
+      WINDEPLOYQT: ${{ github.workspace }}\Qt\6.6.1\msvc2019_64\bin\windeployqt.exe
 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
