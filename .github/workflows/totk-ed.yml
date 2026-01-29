@@ -61,7 +61,6 @@ jobs:
           # git clone --recursive https://git.citron-emu.org/Citron/Citron.git
           # git clone --recursive https://git.citron-emu.org/citron/emu.git
           git clone --recursive https://git.eden-emu.dev/eden-emu/eden
-          git checkout v0.1.0
 
       # https://github.com/microsoft/setup-msbuild/tree/v1.1.3
       - name: Add MSBuild to PATH
@@ -85,6 +84,7 @@ jobs:
           # cd Citron
           # cd emu
           cd eden
+          git checkout v0.1.0
           echo "编译前打印"
           # dir
           ls -alh
