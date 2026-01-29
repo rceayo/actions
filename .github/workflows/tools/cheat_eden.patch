@@ -1,8 +1,29 @@
 diff --git a/src/core/memory/cheat_engine.cpp b/src/core/memory/cheat_engine.cpp
-index 77cd587238..3705c1f6ef 100644
+index 77cd587238..e01d0ec67d 100644
 --- a/src/core/memory/cheat_engine.cpp
 +++ b/src/core/memory/cheat_engine.cpp
-@@ -68,7 +68,11 @@ void StandardVmCallbacks::MemoryWriteUnsafe(VAddr address, const void* data, u64
+@@ -53,6 +53,11 @@ StandardVmCallbacks::~StandardVmCallbacks() = default;
+ 
+ void StandardVmCallbacks::MemoryReadUnsafe(VAddr address, void* data, u64 size) {
+     // Return zero on invalid address
++    // Early check for clearly invalid addresses to avoid error logs from memory system
++    if (address == ~0ULL || address >= 0x8000000000ULL) {
++        std::memset(data, 0, size);
++        return;
++    }
+     if (!IsAddressInRange(address) || !system.ApplicationMemory().IsValidVirtualAddress(address)) {
+         std::memset(data, 0, size);
+         return;
+@@ -63,12 +68,20 @@ void StandardVmCallbacks::MemoryReadUnsafe(VAddr address, void* data, u64 size)
+ 
+ void StandardVmCallbacks::MemoryWriteUnsafe(VAddr address, const void* data, u64 size) {
+     // Skip invalid memory write address
++    // Early check for clearly invalid addresses to avoid error logs from memory system
++    if (address == ~0ULL || address >= 0x8000000000ULL) {
++        return;
++    }
+     if (!IsAddressInRange(address) || !system.ApplicationMemory().IsValidVirtualAddress(address)) {
+         return;
      }
  
      if (system.ApplicationMemory().WriteBlock(address, data, size)) {
@@ -15,7 +36,7 @@ index 77cd587238..3705c1f6ef 100644
      }
  }
  
-@@ -134,6 +138,15 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
+@@ -134,6 +147,15 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
      return true;
  }
  
@@ -43,3 +64,33 @@ index f52f2be7c3..45341f7642 100644
  
      const CheatProcessMetadata& metadata;
      Core::System& system;
+diff --git a/src/core/memory/dmnt_cheat_vm.cpp b/src/core/memory/dmnt_cheat_vm.cpp
+index caceeec4fc..0523320b3d 100644
+--- a/src/core/memory/dmnt_cheat_vm.cpp
++++ b/src/core/memory/dmnt_cheat_vm.cpp
+@@ -689,12 +689,25 @@ u64 DmntCheatVm::GetCheatProcessAddress(const CheatProcessMetadata& metadata,
+     switch (mem_type) {
+     case MemoryAccessType::MainNso:
+     default:
++        // Return an invalid address if the region is not initialized yet
++        if (metadata.main_nso_extents.size == 0) {
++            return ~0ULL;
++        }
+         return metadata.main_nso_extents.base + rel_address;
+     case MemoryAccessType::Heap:
++        if (metadata.heap_extents.size == 0) {
++            return ~0ULL;
++        }
+         return metadata.heap_extents.base + rel_address;
+     case MemoryAccessType::Alias:
++        if (metadata.alias_extents.size == 0) {
++            return ~0ULL;
++        }
+         return metadata.alias_extents.base + rel_address;
+     case MemoryAccessType::Aslr:
++        if (metadata.aslr_extents.size == 0) {
++            return ~0ULL;
++        }
+         return metadata.aslr_extents.base + rel_address;
+     }
+ }
