@@ -1,5 +1,5 @@
 diff --git a/src/core/memory/cheat_engine.cpp b/src/core/memory/cheat_engine.cpp
-index 77cd587238..2f5d9f6a94 100644
+index 77cd587238..0223a2e5ab 100644
 --- a/src/core/memory/cheat_engine.cpp
 +++ b/src/core/memory/cheat_engine.cpp
 @@ -53,7 +53,14 @@ StandardVmCallbacks::~StandardVmCallbacks() = default;
@@ -111,6 +111,58 @@ index 77cd587238..2f5d9f6a94 100644
  CheatParser::~CheatParser() = default;
  
  TextCheatParser::~TextCheatParser() = default;
+@@ -223,6 +280,8 @@ CheatEngine::CheatEngine(System& system_, std::vector<CheatEntry> cheats_,
+     : vm{std::make_unique<StandardVmCallbacks>(system_, metadata)},
+       cheats(std::move(cheats_)), core_timing{system_.CoreTiming()}, system{system_} {
+     metadata.main_nso_build_id = build_id_;
++    LOG_ERROR(CheatEngine, "CheatEngine CONSTRUCTED with {} cheats for build_id={}",
++              this->cheats.size(), Common::HexToString(build_id_));
+ }
+ 
+ CheatEngine::~CheatEngine() {
+@@ -230,6 +289,9 @@ CheatEngine::~CheatEngine() {
+ }
+ 
+ void CheatEngine::Initialize() {
++    LOG_ERROR(CheatEngine, "CheatEngine::Initialize() called - building_id={}",
++              Common::HexToString(metadata.main_nso_build_id));
++
+     event = Core::Timing::CreateEvent(
+         "CheatEngine::FrameCallback::" + Common::HexToString(metadata.main_nso_build_id),
+         [this](s64 time,
+@@ -256,6 +318,16 @@ void CheatEngine::Initialize() {
+         .size = page_table.GetAliasRegionSize(),
+     };
+ 
++    LOG_ERROR(CheatEngine,
++              "CheatEngine initialized: process_id={:#X}, title_id={:#X}\n"
++              "  heap: base={:#X}, size={:#X}\n"
++              "  aslr: base={:#X}, size={:#X}\n"
++              "  alias: base={:#X}, size={:#X}",
++              metadata.process_id, metadata.title_id,
++              metadata.heap_extents.base, metadata.heap_extents.size,
++              metadata.aslr_extents.base, metadata.aslr_extents.size,
++              metadata.alias_extents.base, metadata.alias_extents.size);
++
+     is_pending_reload.exchange(true);
+ }
+ 
+@@ -273,6 +345,7 @@ void CheatEngine::Reload(std::vector<CheatEntry> reload_cheats) {
+ 
+ void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
+     if (is_pending_reload.exchange(false)) {
++        LOG_ERROR(CheatEngine, "Reloading cheat program with {} cheat entries", cheats.size());
+         vm.LoadProgram(cheats);
+     }
+ 
+@@ -280,6 +353,7 @@ void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
+         return;
+     }
+ 
++    LOG_ERROR(CheatEngine, "Executing cheat VM - program size: {} opcodes", vm.GetProgramSize());
+     vm.Execute(metadata);
+ }
+ 
 diff --git a/src/core/memory/cheat_engine.h b/src/core/memory/cheat_engine.h
 index f52f2be7c3..45341f7642 100644
 --- a/src/core/memory/cheat_engine.h
