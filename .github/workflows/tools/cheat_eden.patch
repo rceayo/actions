@@ -1,5 +1,5 @@
 diff --git a/src/core/memory/cheat_engine.cpp b/src/core/memory/cheat_engine.cpp
-index 77cd587238..0223a2e5ab 100644
+index dcfd23644f..926ac2d220 100644
 --- a/src/core/memory/cheat_engine.cpp
 +++ b/src/core/memory/cheat_engine.cpp
 @@ -53,7 +53,14 @@ StandardVmCallbacks::~StandardVmCallbacks() = default;
@@ -120,17 +120,17 @@ index 77cd587238..0223a2e5ab 100644
  }
  
  CheatEngine::~CheatEngine() {
-@@ -230,6 +289,9 @@ CheatEngine::~CheatEngine() {
+@@ -233,6 +292,9 @@ CheatEngine::~CheatEngine() {
  }
  
  void CheatEngine::Initialize() {
 +    LOG_ERROR(CheatEngine, "CheatEngine::Initialize() called - building_id={}",
-+              Common::HexToString(metadata.main_nso_build_id));
++        Common::HexToString(metadata.main_nso_build_id));
 +
      event = Core::Timing::CreateEvent(
          "CheatEngine::FrameCallback::" + Common::HexToString(metadata.main_nso_build_id),
-         [this](s64 time,
-@@ -256,6 +318,16 @@ void CheatEngine::Initialize() {
+         [this](s64 time, std::chrono::nanoseconds ns_late) -> std::optional<std::chrono::nanoseconds> {
+@@ -258,6 +320,16 @@ void CheatEngine::Initialize() {
          .size = page_table.GetAliasRegionSize(),
      };
  
@@ -147,7 +147,7 @@ index 77cd587238..0223a2e5ab 100644
      is_pending_reload.exchange(true);
  }
  
-@@ -273,6 +345,7 @@ void CheatEngine::Reload(std::vector<CheatEntry> reload_cheats) {
+@@ -275,6 +347,7 @@ void CheatEngine::Reload(std::vector<CheatEntry> reload_cheats) {
  
  void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
      if (is_pending_reload.exchange(false)) {
@@ -155,7 +155,7 @@ index 77cd587238..0223a2e5ab 100644
          vm.LoadProgram(cheats);
      }
  
-@@ -280,6 +353,7 @@ void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
+@@ -282,6 +355,7 @@ void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
          return;
      }
  
