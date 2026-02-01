@@ -1,33 +1,44 @@
 diff --git a/src/core/memory/cheat_engine.cpp b/src/core/memory/cheat_engine.cpp
-index dcfd23644f..926ac2d220 100644
+index dcfd23644f..54a8095e1e 100644
 --- a/src/core/memory/cheat_engine.cpp
 +++ b/src/core/memory/cheat_engine.cpp
-@@ -53,7 +53,14 @@ StandardVmCallbacks::~StandardVmCallbacks() = default;
+@@ -53,7 +53,19 @@ StandardVmCallbacks::~StandardVmCallbacks() = default;
  
  void StandardVmCallbacks::MemoryReadUnsafe(VAddr address, void* data, u64 size) {
      // Return zero on invalid address
+-    if (!IsAddressInRange(address) || !system.ApplicationMemory().IsValidVirtualAddress(address)) {
 +    // Early check for clearly invalid addresses to avoid error logs from memory system
 +    if (address == ~0ULL || address >= 0x8000000000ULL) {
 +        LOG_ERROR(CheatEngine, "Blocked cheat read from invalid address={:016X}", address);
 +        std::memset(data, 0, size);
 +        return;
 +    }
-     if (!IsAddressInRange(address) || !system.ApplicationMemory().IsValidVirtualAddress(address)) {
++    if (!IsAddressInRange(address)) {
 +        LOG_ERROR(CheatEngine, "Blocked cheat read from out-of-range address={:016X}", address);
++        std::memset(data, 0, size);
++        return;
++    }
++    if (!system.ApplicationMemory().IsValidVirtualAddress(address)) {
++        LOG_WARNING(CheatEngine, "Blocked cheat read from unmapped address={:016X}", address);
          std::memset(data, 0, size);
          return;
      }
-@@ -63,12 +70,22 @@ void StandardVmCallbacks::MemoryReadUnsafe(VAddr address, void* data, u64 size)
+@@ -63,12 +75,26 @@ void StandardVmCallbacks::MemoryReadUnsafe(VAddr address, void* data, u64 size)
  
  void StandardVmCallbacks::MemoryWriteUnsafe(VAddr address, const void* data, u64 size) {
      // Skip invalid memory write address
+-    if (!IsAddressInRange(address) || !system.ApplicationMemory().IsValidVirtualAddress(address)) {
 +    // Early check for clearly invalid addresses to avoid error logs from memory system
 +    if (address == ~0ULL || address >= 0x8000000000ULL) {
 +        LOG_ERROR(CheatEngine, "Blocked cheat write to invalid address={:016X}", address);
 +        return;
 +    }
-     if (!IsAddressInRange(address) || !system.ApplicationMemory().IsValidVirtualAddress(address)) {
++    if (!IsAddressInRange(address)) {
 +        LOG_ERROR(CheatEngine, "Blocked cheat write to out-of-range address={:016X}", address);
++        return;
++    }
++    if (!system.ApplicationMemory().IsValidVirtualAddress(address)) {
++        LOG_WARNING(CheatEngine, "Blocked cheat write to unmapped address={:016X}", address);
          return;
      }
  
@@ -41,7 +52,7 @@ index dcfd23644f..926ac2d220 100644
      }
  }
  
-@@ -114,6 +131,38 @@ void StandardVmCallbacks::CommandLog(std::string_view data) {
+@@ -114,6 +140,38 @@ void StandardVmCallbacks::CommandLog(std::string_view data) {
  }
  
  bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
@@ -80,14 +91,14 @@ index dcfd23644f..926ac2d220 100644
      if ((in < metadata.main_nso_extents.base ||
           in >= metadata.main_nso_extents.base + metadata.main_nso_extents.size) &&
          (in < metadata.heap_extents.base ||
-@@ -122,11 +171,10 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
+@@ -122,11 +180,10 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
           in >= metadata.alias_extents.base + metadata.alias_extents.size) &&
          (in < metadata.aslr_extents.base ||
           in >= metadata.aslr_extents.base + metadata.aslr_extents.size)) {
 -        LOG_DEBUG(CheatEngine,
 -                  "Cheat attempting to access memory at invalid address={:016X}, if this "
-+        LOG_ERROR(CheatEngine,
-+                  "BLOCKED: Cheat attempting to access memory at invalid address={:016X}, if this "
++        LOG_WARNING(CheatEngine,
++                  "Blocked cheat attempting to access memory at invalid address={:016X}, if this "
                    "persists, "
 -                  "the cheat may be incorrect. However, this may be normal early in execution if "
 -                  "the game has not properly set up yet.",
@@ -95,7 +106,7 @@ index dcfd23644f..926ac2d220 100644
                    in);
          return false; ///< Invalid addresses will hard crash
      }
-@@ -134,6 +182,15 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
+@@ -134,6 +191,15 @@ bool StandardVmCallbacks::IsAddressInRange(VAddr in) const {
      return true;
  }
  
@@ -111,30 +122,34 @@ index dcfd23644f..926ac2d220 100644
  CheatParser::~CheatParser() = default;
  
  TextCheatParser::~TextCheatParser() = default;
-@@ -223,6 +280,8 @@ CheatEngine::CheatEngine(System& system_, std::vector<CheatEntry> cheats_,
+@@ -223,16 +289,21 @@ CheatEngine::CheatEngine(System& system_, std::vector<CheatEntry> cheats_,
      : vm{std::make_unique<StandardVmCallbacks>(system_, metadata)},
        cheats(std::move(cheats_)), core_timing{system_.CoreTiming()}, system{system_} {
      metadata.main_nso_build_id = build_id_;
-+    LOG_ERROR(CheatEngine, "CheatEngine CONSTRUCTED with {} cheats for build_id={}",
++    LOG_INFO(CheatEngine, "CheatEngine CONSTRUCTED with {} cheats for build_id={}",
 +              this->cheats.size(), Common::HexToString(build_id_));
  }
  
  CheatEngine::~CheatEngine() {
-@@ -233,6 +292,9 @@ CheatEngine::~CheatEngine() {
+     if (event)
+         core_timing.UnscheduleEvent(event);
+     else
+-        LOG_ERROR(CheatEngine, "~CheatEngine before event was registered");
++        LOG_INFO(CheatEngine, "~CheatEngine before event was registered");
  }
  
  void CheatEngine::Initialize() {
-+    LOG_ERROR(CheatEngine, "CheatEngine::Initialize() called - building_id={}",
++    LOG_INFO(CheatEngine, "CheatEngine::Initialize() called - building_id={}",
 +        Common::HexToString(metadata.main_nso_build_id));
 +
      event = Core::Timing::CreateEvent(
          "CheatEngine::FrameCallback::" + Common::HexToString(metadata.main_nso_build_id),
          [this](s64 time, std::chrono::nanoseconds ns_late) -> std::optional<std::chrono::nanoseconds> {
-@@ -258,6 +320,16 @@ void CheatEngine::Initialize() {
+@@ -258,6 +329,16 @@ void CheatEngine::Initialize() {
          .size = page_table.GetAliasRegionSize(),
      };
  
-+    LOG_ERROR(CheatEngine,
++    LOG_INFO(CheatEngine,
 +              "CheatEngine initialized: process_id={:#X}, title_id={:#X}\n"
 +              "  heap: base={:#X}, size={:#X}\n"
 +              "  aslr: base={:#X}, size={:#X}\n"
@@ -147,19 +162,19 @@ index dcfd23644f..926ac2d220 100644
      is_pending_reload.exchange(true);
  }
  
-@@ -275,6 +347,7 @@ void CheatEngine::Reload(std::vector<CheatEntry> reload_cheats) {
+@@ -275,6 +356,7 @@ void CheatEngine::Reload(std::vector<CheatEntry> reload_cheats) {
  
  void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
      if (is_pending_reload.exchange(false)) {
-+        LOG_ERROR(CheatEngine, "Reloading cheat program with {} cheat entries", cheats.size());
++        LOG_INFO(CheatEngine, "Reloading cheat program with {} cheat entries", cheats.size());
          vm.LoadProgram(cheats);
      }
  
-@@ -282,6 +355,7 @@ void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
+@@ -282,6 +364,7 @@ void CheatEngine::FrameCallback(std::chrono::nanoseconds ns_late) {
          return;
      }
  
-+    LOG_ERROR(CheatEngine, "Executing cheat VM - program size: {} opcodes", vm.GetProgramSize());
++    LOG_DEBUG(CheatEngine, "Executing cheat VM - program size: {} opcodes", vm.GetProgramSize());
      vm.Execute(metadata);
  }
  
