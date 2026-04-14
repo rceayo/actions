@@ -1,0 +1,62 @@
+# .github/workflows/burp-ai-agent.yml
+
+name: Build Burp AI Agent CI
+
+# 触发条件
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/burp-ai-agent.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      # 2. 克隆 burp-ai-agent 仓库（如果是从其他仓库构建）
+      # 如果 workflow 文件就在 burp-ai-agent 仓库中，可以跳过此步骤
+      - name: Clone burp-ai-agent repository
+        run: |
+          git clone https://github.com/six2dez/burp-ai-agent.git
+
+      # 3. 设置 JDK 21（burp-ai-agent 需要 Java 21）
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'  # 或 'adopt', 'oracle', 'zulu' 等
+
+      # 4. 使用 Gradle 构建
+      - name: Build with Gradle
+        run: |
+          cd burp-ai-agent
+          chmod +x ./gradlew
+          ./gradlew clean shadowJar
+
+      # 5. 上传构建产物
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: burp-ai-agent-jar
+          path: burp-ai-agent/build/libs/*.jar
+          retention-days: 30
+
+      # 6. (可选) 创建 Release 并上传 JAR
+      - name: Create Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: burp-ai-agent/build/libs/*.jar
+          tag_name: v${{ github.run_number }}
+          name: Burp AI Agent Build ${{ github.run_number }}
+          body: |
+            Automated build of Burp AI Agent extension.
+            Java Version: 21
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
