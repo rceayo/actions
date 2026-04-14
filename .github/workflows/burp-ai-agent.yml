@@ -46,17 +46,3 @@ jobs:
           name: burp-ai-agent-jar
           path: burp-ai-agent/build/libs/*.jar
           retention-days: 30
-
-      # 6. (可选) 创建 Release 并上传 JAR
-      - name: Create Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: burp-ai-agent/build/libs/*.jar
-          tag_name: v${{ github.run_number }}
-          name: Burp AI Agent Build ${{ github.run_number }}
-          body: |
-            Automated build of Burp AI Agent extension.
-            Java Version: 21
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
