@@ -70,14 +70,14 @@ jobs:
           name: OpenSteamTool-Release
           path: |
             # OpenSteamTool dll
-            build/Release/
+            OpenSteamTool/build/Release/
             # extract_tickets
-            build/tools/Release/
+            OpenSteamTool/build/tools/Release/
 
       - name: Archive Debug artifacts
         uses: actions/upload-artifact@v4
         with:
           name: OpenSteamTool-Debug
           path: |
-            build/Debug/
-            build/tools/Debug/
+            OpenSteamTool/build/Debug/
+            OpenSteamTool/build/tools/Debug/
