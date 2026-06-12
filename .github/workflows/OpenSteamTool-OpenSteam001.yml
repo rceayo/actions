@@ -1,0 +1,83 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Diy OpenSteamTool CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/OpenSteamTool-OpenSteam001.yml'
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    # runs-on: windows-2022
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      # Runs a single command using the runners shell
+      # pwd
+      # D:/a/actions/actions/
+      - name: Clone the repository
+        run: |
+          git clone --recursive https://github.com/OpenSteam001/OpenSteamTool
+      
+      - name: Build OpenSteamTool
+        shell: bash
+        # # 使用mingw的clang，而不是msvc
+        # env:
+        #   COMPILER: clang
+        run: |
+          pwd
+          cd OpenSteamTool
+          # git checkout v0.1.0
+          echo "编译前打印"
+          # dir
+          ls -alh
+          # ls -R .
+
+          echo "开始msvc编译"
+          # Configure
+          # cmake -S src -B build -G "Ninja Multi-Config"
+          build.bat
+
+          # 使用 MSVC 的简单命令行构建
+          # cmake --build . --config Release
+
+          echo "编译成功后打印"
+          # dir
+          ls -R .
+          # ls -alh artifacts
+
+      - name: Archive Release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenSteamTool-Release
+          path: |
+            # OpenSteamTool dll
+            build/Release/
+            # extract_tickets
+            build/tools/Release/
+
+      - name: Archive Debug artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenSteamTool-Debug
+          path: |
+            build/Debug/
+            build/tools/Debug/
