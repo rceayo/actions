@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Diy OpenSteamTool CI
+name: Diy OpenSteamTool-OpenSteam001 CI
 
 # Controls when the workflow will run
 on:
@@ -54,7 +54,7 @@ jobs:
           echo "开始msvc编译"
           # Configure
           # cmake -S src -B build -G "Ninja Multi-Config"
-          build.bat
+          ./build.bat
 
           # 使用 MSVC 的简单命令行构建
           # cmake --build . --config Release
